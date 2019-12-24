@@ -26,19 +26,117 @@ const operatorButtons = [
   } 
 ];
 
+let inputString = '';
 const inputArray = [];
+let  result = '';
 
-createDisplay(inputArray);
+createDisplay(inputString);
 addbuttonGrid();
 addOperatorButtons(operatorButtons);
 
 
+function resetCalculator () {
+  inputString = '';
+  inputArray.shift();
+  document.getElementById('display').innerHTML = '';
+}
+
+
+function operate ( inputArray ) {
+
+  organizeInput();
+  
+  for ( let i = 0 ; i < inputArray.length ; i++ ) {
+    
+    if ( inputArray[i] == '*' ) {
+      inputArray[i-1] = inputArray[i-1] * inputArray[i+1];
+      inputArray.splice(i, 2);
+      if ( inputArray.length > 1 ) {
+        i = 0;
+      }
+      console.log(inputArray);
+    }
+  
+  }
+
+  for ( let i = 0 ; i < inputArray.length ; i++ ) {
+    
+    if ( inputArray[i] == '/' ) {
+      if ( inputArray[i+1] == '0' ) {
+        alert('With zero you must divide not!');
+        resetCalculator();
+        return;
+      }
+      inputArray[i-1] = inputArray[i-1] / inputArray[i+1];
+      inputArray.splice(i, 2);
+      if ( inputArray.length > 1 ) {
+        i = 0;
+      }
+      console.log(inputArray);
+    }
+  
+  }
+
+  for ( let i = 0 ; i < inputArray.length ; i++ ) {
+    
+    if ( inputArray[i] == '+' ) {
+      inputArray[i-1] = +inputArray[i-1] + +inputArray[i+1];
+      inputArray.splice(i, 2);
+      if ( inputArray.length > 1 ) {
+        i = 0;
+      }
+      console.log(inputArray);
+    }
+  
+  }
+  
+  for ( let i = 0 ; i < inputArray.length ; i++ ) {
+    
+    if ( inputArray[i] == '-' ) {
+      console.log(inputArray);
+      inputArray[i-1] = +inputArray[i-1] - +inputArray[i+1];
+      inputArray.splice(i, 2);
+      if ( inputArray.length > 1 ) {
+        i = 0;
+      }
+      console.log(inputArray);
+    }
+  
+  }
+
+  result = inputArray[0];
+  document.getElementById('display').innerHTML = result;
+  
+  console.log(result + ' is teh result!');
+  
+}
+
+
+function organizeInput () {
+
+  for ( let i = 0 ; i < inputString.length ; i++ ) {
+
+    const char = inputString[i];
+
+    if ( char == '+' || char == '-' || char == '*' || char == '/' ) {
+      inputArray.push(inputString.slice( 0, i ));
+      inputArray.push(char);
+      inputString = inputString.slice( i + 1 );
+      i = 0;
+      
+    }
+    
+  }
+
+  inputArray.push(inputString);
+
+}
+
 
 function refreshDisplay () {
 
-  const displayString = inputArray.toString();
   const display = document.getElementById('display');
-  display.innerHTML = displayString;
+  display.innerHTML = inputString;
 
 }
 
@@ -55,13 +153,13 @@ function addbuttonGrid () {
   button.innerHTML = i;
   
   button.addEventListener('click', (e) => {
-      inputArray.push(i);
-      refreshDisplay();
-    })
+    inputString = inputString.concat(i);
+    refreshDisplay();
+  })
 
-    container.appendChild(button);
+  container.appendChild(button);
 
-  }
+}
 
   const container = document.getElementById('calc-container');
   const button = document.createElement('button'); 
@@ -70,7 +168,7 @@ function addbuttonGrid () {
   button.id = 'theDot';
   button.innerHTML = 'the Dot';
   button.addEventListener('click', (e) => {
-    inputArray.push('.');
+    inputString = inputString.concat('.');
     refreshDisplay();
   })
 
@@ -92,15 +190,27 @@ function addOperatorButtons ( operatorButtons ) {
     button.id = buttonInfo.id;
     button.innerHTML = buttonInfo.text;
 
-    button.addEventListener('click', (e) => {
-      inputArray.push(buttonInfo.text);
-      refreshDisplay();
-    })
+    if ( buttonInfo.id == 'operate' ){
+      button.addEventListener('click', (e) => {
+        operate(inputArray);
+        resetCalculator();
+        document.getElementById('display').innerHTML = result;
+      })
+    } else if ( buttonInfo.id == 'clr' ) {
+      button.addEventListener('click', (e) => {
+        resetCalculator();
+      })
+    } else {
+      button.addEventListener('click', (e) => {
+        inputString = inputString.concat(buttonInfo.text);
+        refreshDisplay();
+      })
+    }
 
     calcContainer.appendChild(button);
     
-  });
-  
+  })
+
 }
 
 
@@ -111,8 +221,6 @@ function createDisplay () {
 
   displayElement.classList.add('div');
   displayElement.id = 'display';
-  html = inputArray;
-  displayElement.innerHTML = html;
 
   calcContainer.appendChild(displayElement);
 
