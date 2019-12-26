@@ -1,4 +1,6 @@
-// calculator to come 
+// The Great Calculator!!
+// for The Odin Project 
+
 const operatorButtons = [
   { id: 'clr',
     class: 'button',
@@ -109,7 +111,7 @@ function addKeyboardListeners () {
     if ( event.code == 'NumpadEnter' || event.code == 'Enter' ) {
       operate(inputArray);
       resetCalculator();
-      document.getElementById('resultDisplay').innerHTML = result;
+      document.getElementById('inputDisplay').innerHTML = result;
     }
     if ( event.code == 'Escape' ) {
       resetCalculator();
@@ -119,6 +121,7 @@ function addKeyboardListeners () {
     }
   })
 }
+
 
 function addDot () {
 
@@ -145,7 +148,7 @@ function resetCalculator () {
   inputString = '';
   inputArray.shift();
   document.getElementById('inputDisplay').innerHTML = '';
-  document.getElementById('resultDisplay').innerHTML = '';
+
 }
 
 
@@ -153,6 +156,19 @@ function operate ( inputArray ) {
 
   organizeInput();
 
+  doMultiplies(inputArray);
+  doDivides(inputArray);
+  doAdds(inputArray);
+  doRedacts(inputArray);
+  
+  result = Math.round(inputArray[0]*10) / 10;
+  document.getElementById('inputDisplay').innerHTML = result;
+  
+}
+
+
+function doMultiplies ( inputArray ) {
+  
   for ( let i = 0 ; i < inputArray.length ; i++ ) {
     
     if ( inputArray[i] == '*' ) {
@@ -163,7 +179,11 @@ function operate ( inputArray ) {
       }
     }
   }
+}
 
+
+function doDivides ( inputArray ) { 
+  
   for ( let i = 0 ; i < inputArray.length ; i++ ) {
     
     if ( inputArray[i] == '/' ) {
@@ -179,6 +199,10 @@ function operate ( inputArray ) {
       }
     }
   }
+}
+
+
+function doAdds ( inputArray ) {
 
   for ( let i = 0 ; i < inputArray.length ; i++ ) {
     
@@ -190,7 +214,11 @@ function operate ( inputArray ) {
       }
     }
   }
-  
+}
+
+
+function doRedacts ( inputArray ) {
+
   for ( let i = 0 ; i < inputArray.length ; i++ ) {
     
     if ( inputArray[i] == '-' ) {
@@ -201,10 +229,6 @@ function operate ( inputArray ) {
       }
     }
   }
-
-  result = Math.round(inputArray[0]*10) / 10;
-  document.getElementById('resultDisplay').innerHTML = result;
-  
 }
 
 
@@ -221,7 +245,6 @@ function organizeInput () {
       i = 0;
       
     }
-    
   }
 
   inputArray.push(inputString);
@@ -265,7 +288,6 @@ function addbuttonGrid () {
   button.innerHTML = 'the Dot';
   button.addEventListener('click', (e) => {
     addDot();
-    //inputString = inputString.concat('.');
     refreshDisplay();
   })
 
@@ -291,7 +313,7 @@ function addOperatorButtons ( operatorButtons ) {
       button.addEventListener('click', (e) => {
         operate(inputArray);
         resetCalculator();
-        document.getElementById('resultDisplay').innerHTML = result;
+        document.getElementById('inputDisplay').innerHTML = result;
       })
     } else if ( buttonInfo.id == 'clr' ) {
       button.addEventListener('click', (e) => {
@@ -307,7 +329,6 @@ function addOperatorButtons ( operatorButtons ) {
     calcContainer.appendChild(button);
     
   })
-
 }
 
 
@@ -325,17 +346,8 @@ function createDisplay () {
 
   inputParagraph.classList.add('p')
   inputParagraph.id = 'inputDisplay';
-  inputParagraph.innerHTML = 'input';
 
   displayContainer.appendChild(inputParagraph);
-
-  const resultParagraph = document.createElement('p');
-
-  resultParagraph.classList.add('p');
-  resultParagraph.id = 'resultDisplay';
-  resultParagraph.innerHTML = 'result';
-
-  displayContainer.appendChild(resultParagraph);
 
 } 
 
